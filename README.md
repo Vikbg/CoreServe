@@ -1,14 +1,14 @@
-# Backend-Triangle
+# CoreServe
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)  
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D14-brightgreen)](https://nodejs.org/)  
-[![Build Status](https://img.shields.io/github/actions/workflow/status/Vikbg/backend-triangle/nodejs.yml?branch=main)](https://github.com/Vikbg/backend-triangle/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/Vikbg/CoreServe/nodejs.yml?branch=main)](https://github.com/Vikbg/CoreServe/actions)
 
 ---
 
 ## 🚀 Présentation
 
-**Backend-Triangle** est un backend Node.js modulaire et léger, conçu pour fournir une base solide à des projets nécessitant une API REST bien organisée et maintenable.
+**CoreServe** est un backend Node.js modulaire et léger, conçu pour fournir une base solide à des projets nécessitant une API REST bien organisée et maintenable.
 
 Il inclut une architecture claire avec séparation des responsabilités (routes, contrôleurs, modèles, middlewares) ainsi qu’un système simple de gestion de la base de données.
 
@@ -30,8 +30,8 @@ Il inclut une architecture claire avec séparation des responsabilités (routes,
 1. Clone le dépôt
 
 ```bash
-git clone https://github.com/Vikbg/backend-triangle.git
-cd backend-triangle
+git clone https://github.com/Vikbg/CoreServe.git
+cd CoreServe
 
 2. Installe les dépendances avec pnpm (ou npm si tu préfères)
 
@@ -64,7 +64,7 @@ Le serveur écoute alors sur le port configuré (ex: http://localhost:3000).
 
 🧩 Structure du projet
 
-backend-triangle/
+CoreServe/
 ├── controllers/        # Logique métier et gestion des requêtes
 ├── middlewares/        # Fonctions middleware pour requêtes HTTP
 ├── models/             # Modèles de données (ex: schémas DB)
@@ -98,7 +98,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/hello', (req, res) => {
-  res.json({ message: 'Hello from Backend-Triangle!' });
+  res.json({ message: 'Hello from CoreServe!' });
 });
 
 module.exports = router;
@@ -143,12 +143,12 @@ Ce projet est sous licence MIT - voir le fichier LICENSE pour plus de détails.
 
 🤝 Remerciements
 
-Merci d'utiliser Backend-Triangle. Pour toute question, n’hésite pas à ouvrir une issue ou me contacter.
+Merci d'utiliser CoreServe. Pour toute question, n’hésite pas à ouvrir une issue ou me contacter.
 
 
 ---
 
 Viktor
-Backend-Triangle | 2025
+CoreServe | 2025
 
 ---
