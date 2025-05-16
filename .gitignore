@@ -44,3 +44,6 @@ jest/cache/
 # Tests folders
 perfs-tests/
 tests/
+
+# Configuration files
+.env
