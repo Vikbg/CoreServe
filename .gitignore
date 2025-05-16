@@ -1,4 +1,4 @@
-# Node modules folder (heavy and rebuilt with npm install)
+# Node modules folder
 node_modules/
 
 # Logs
@@ -40,3 +40,7 @@ coverage/
 
 # Jest cache
 jest/cache/
+
+# Tests folders
+perfs-tests/
+tests/
