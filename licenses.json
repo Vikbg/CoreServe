@@ -1,0 +1,97 @@
+{
+  "CoreServe@1.0.0": {
+    "licenses": "ISC",
+    "path": "/data/data/com.termux/files/home/code/CoreServe",
+    "licenseFile": "/data/data/com.termux/files/home/code/CoreServe/LICENSE"
+  },
+  "artillery@2.0.23": {
+    "licenses": "MPL-2.0",
+    "repository": "https://github.com/artilleryio/artillery",
+    "publisher": "Hassy Veldstra",
+    "email": "h@veldstra.org",
+    "path": "/data/data/com.termux/files/home/code/CoreServe/node_modules/artillery",
+    "licenseFile": "/data/data/com.termux/files/home/code/CoreServe/node_modules/artillery/README.md"
+  },
+  "bcryptjs@3.0.2": {
+    "licenses": "BSD-3-Clause",
+    "repository": "https://github.com/dcodeIO/bcrypt.js",
+    "publisher": "Daniel Wirtz",
+    "email": "dcode@dcode.io",
+    "path": "/data/data/com.termux/files/home/code/CoreServe/node_modules/bcryptjs",
+    "licenseFile": "/data/data/com.termux/files/home/code/CoreServe/node_modules/bcryptjs/LICENSE"
+  },
+  "cors@2.8.5": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expressjs/cors",
+    "publisher": "Troy Goode",
+    "email": "troygoode@gmail.com",
+    "url": "https://github.com/troygoode/",
+    "path": "/data/data/com.termux/files/home/code/CoreServe/node_modules/cors",
+    "licenseFile": "/data/data/com.termux/files/home/code/CoreServe/node_modules/cors/LICENSE"
+  },
+  "dotenv@16.5.0": {
+    "licenses": "BSD-2-Clause",
+    "repository": "https://github.com/motdotla/dotenv",
+    "path": "/data/data/com.termux/files/home/code/CoreServe/node_modules/dotenv",
+    "licenseFile": "/data/data/com.termux/files/home/code/CoreServe/node_modules/dotenv/LICENSE"
+  },
+  "express-validator@7.2.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/express-validator/express-validator",
+    "publisher": "Christoph Tavan",
+    "email": "dev@tavan.de",
+    "path": "/data/data/com.termux/files/home/code/CoreServe/node_modules/express-validator",
+    "licenseFile": "/data/data/com.termux/files/home/code/CoreServe/node_modules/express-validator/LICENSE"
+  },
+  "express@5.1.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/expressjs/express",
+    "publisher": "TJ Holowaychuk",
+    "email": "tj@vision-media.ca",
+    "path": "/data/data/com.termux/files/home/code/CoreServe/node_modules/express",
+    "licenseFile": "/data/data/com.termux/files/home/code/CoreServe/node_modules/express/LICENSE"
+  },
+  "jest@29.7.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/jestjs/jest",
+    "path": "/data/data/com.termux/files/home/code/CoreServe/node_modules/jest",
+    "licenseFile": "/data/data/com.termux/files/home/code/CoreServe/node_modules/jest/LICENSE"
+  },
+  "jsonwebtoken@9.0.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/auth0/node-jsonwebtoken",
+    "publisher": "auth0",
+    "path": "/data/data/com.termux/files/home/code/CoreServe/node_modules/jsonwebtoken",
+    "licenseFile": "/data/data/com.termux/files/home/code/CoreServe/node_modules/jsonwebtoken/LICENSE"
+  },
+  "mysql2@3.14.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/sidorares/node-mysql2",
+    "publisher": "Andrey Sidorov",
+    "email": "andrey.sidorov@gmail.com",
+    "path": "/data/data/com.termux/files/home/code/CoreServe/node_modules/mysql2",
+    "licenseFile": "/data/data/com.termux/files/home/code/CoreServe/node_modules/mysql2/License"
+  },
+  "node-cache@5.1.2": {
+    "licenses": "MIT",
+    "repository": "https://github.com/node-cache/node-cache",
+    "publisher": "mpneuried",
+    "email": "mp@tcs.de",
+    "path": "/data/data/com.termux/files/home/code/CoreServe/node_modules/node-cache",
+    "licenseFile": "/data/data/com.termux/files/home/code/CoreServe/node_modules/node-cache/LICENSE"
+  },
+  "redis@5.0.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/redis/node-redis",
+    "path": "/data/data/com.termux/files/home/code/CoreServe/node_modules/redis",
+    "licenseFile": "/data/data/com.termux/files/home/code/CoreServe/node_modules/redis/README.md"
+  },
+  "supertest@7.1.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/ladjs/supertest",
+    "publisher": "TJ Holowaychuk",
+    "path": "/data/data/com.termux/files/home/code/CoreServe/node_modules/supertest",
+    "licenseFile": "/data/data/com.termux/files/home/code/CoreServe/node_modules/supertest/LICENSE"
+  }
+}
+
