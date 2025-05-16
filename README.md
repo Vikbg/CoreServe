@@ -1,7 +1,3 @@
-Presque, il te manque juste les balises de code (bash, env, js) pour bien formater les blocs dans le README.md, sinon ça rendra tout collé et difficile à lire.
-
-Je te corrige ça, en gardant ta structure :
-
 # Backend-Triangle
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)  
