@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const scoreController = require('../controllers/scoreController');
+const cache = require('../middlewares/cache');
 const authenticateToken = require('../middlewares/authMiddleware');
 
 router.use(authenticateToken); // Toutes les routes sont protégées
