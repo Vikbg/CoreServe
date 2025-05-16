@@ -9,7 +9,8 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME || 'triangle_db',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  charset: 'utf8mb4'
 });
 
 // Essaie de se connecter à la base
