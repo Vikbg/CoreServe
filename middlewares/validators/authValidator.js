@@ -7,19 +7,16 @@ const registerValidator = [
     .isLength({ min: 3 }).withMessage('Minimum 3 caractères.')
     .matches(/^[a-zA-Z0-9_]+$/).withMessage('Uniquement lettres, chiffres et underscores.'),
 
-  body('email')
-    .trim()
-    .isEmail().withMessage('Email invalide.')
-    .normalizeEmail(),
-
   body('password')
     .notEmpty().withMessage('Mot de passe requis.')
     .isLength({ min: 6 }).withMessage('Minimum 6 caractères.')
 ];
 
 const loginValidator = [
-  body('username').notEmpty().withMessage('Nom d’utilisateur requis.'),
-  body('password').notEmpty().withMessage('Mot de passe requis.')
+  body('username')
+    .notEmpty().withMessage('Nom d’utilisateur requis.'),
+  body('password')
+    .notEmpty().withMessage('Mot de passe requis.')
 ];
 
 module.exports = {

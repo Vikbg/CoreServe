@@ -1,7 +1,7 @@
 const db = require('../db');
 const bcrypt = require('bcryptjs');
 
-// Crée un nouveau joueur (avec hash du mot de passe)
+// Crée un nouveau joueur (hash le mot de passe)
 function createPlayer(username, password, callback) {
   bcrypt.hash(password, 10, (err, hashedPassword) => {
     if (err) return callback(err);
@@ -36,8 +36,19 @@ function getPlayerById(id, callback) {
   });
 }
 
+// Trouve un joueur par username (utile pour vérifier doublon inscription)
+function findUserByUsername(username, callback) {
+  const sql = 'SELECT * FROM players WHERE username = ?';
+  db.query(sql, [username], (err, results) => {
+    if (err) return callback(err);
+    if (results.length === 0) return callback(null, null);
+    callback(null, results[0]);
+  });
+}
+
 module.exports = {
   createPlayer,
   loginPlayer,
   getPlayerById,
+  findUserByUsername,
 };

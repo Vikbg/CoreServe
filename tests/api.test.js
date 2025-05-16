@@ -1,5 +1,19 @@
 const request = require('supertest');
-const app = require('../index'); // Modifie selon où tu exportes ton app Express
+const app = require('../index');
+const db = require('../db');
+
+beforeAll(async () => {
+  // Supprime les données sensibles avant de lancer les tests
+  await new Promise((resolve, reject) => {
+    db.query('DELETE FROM players', (err) => {
+      if (err) return reject(err);
+      db.query('DELETE FROM scores', (err2) => {
+        if (err2) return reject(err2);
+        resolve();
+      });
+    });
+  });
+});
 
 let token = '';
 let userId = '';
@@ -8,13 +22,11 @@ describe('API Endpoints Tests', () => {
 
   const validUser = {
     username: 'testuser',
-    email: 'testuser@example.com',
     password: 'Password123!'
   };
 
   const invalidUser = {
     username: '',
-    email: 'notanemail',
     password: ''
   };
 
@@ -32,17 +44,9 @@ describe('API Endpoints Tests', () => {
     it('should fail with missing fields', async () => {
       const res = await request(app)
         .post('/players/register')
-        .send({ username: '', email: '', password: '' });
+        .send({ username: '', password: '' });
 
       expect(res.statusCode).toBe(400);
-    });
-
-    it('should fail with duplicate email', async () => {
-      const res = await request(app)
-        .post('/players/register')
-        .send(validUser);
-
-      expect(res.statusCode).toBe(409);
     });
   });
 
@@ -51,7 +55,7 @@ describe('API Endpoints Tests', () => {
     it('should login with valid credentials', async () => {
       const res = await request(app)
         .post('/players/login')
-        .send({ email: validUser.email, password: validUser.password });
+        .send({username: validUser.username, password: validUser.password });
 
       expect(res.statusCode).toBe(200);
       expect(res.body.token).toBeDefined();
@@ -62,7 +66,7 @@ describe('API Endpoints Tests', () => {
     it('should fail login with wrong password', async () => {
       const res = await request(app)
         .post('/players/login')
-        .send({ email: validUser.email, password: 'wrongpassword' });
+        .send({ username: validUser.username, password: 'wrongpassword' });
 
       expect(res.statusCode).toBe(401);
     });
@@ -70,7 +74,7 @@ describe('API Endpoints Tests', () => {
     it('should fail login with missing fields', async () => {
       const res = await request(app)
         .post('/players/login')
-        .send({ email: '', password: '' });
+        .send({ username: '', password: '' });
 
       expect(res.statusCode).toBe(400);
     });
@@ -84,7 +88,7 @@ describe('API Endpoints Tests', () => {
         .set('Authorization', `Bearer ${token}`);
 
       expect(res.statusCode).toBe(200);
-      expect(res.body.email).toBe(validUser.email);
+      expect(res.body.username).toBe(validUser.username);
     });
 
     it('should fail without token', async () => {
@@ -103,16 +107,16 @@ describe('API Endpoints Tests', () => {
     });
   });
 
-  // 4. TEST /scores routes (example with GET and POST protected)
-  describe('Protected /scores routes', () => {
-    it('should fail GET /scores without token', async () => {
-      const res = await request(app).get('/scores');
+  // 4. TEST /scores/leaderboard routes (example with GET and POST protected)
+  describe('Protected /scores/leaderboard routes', () => {
+    it('should fail GET /scores/leaderboard without token', async () => {
+      const res = await request(app).get('/scores/leaderboard');
       expect(res.statusCode).toBe(401);
     });
 
-    it('should succeed GET /scores with token', async () => {
+    it('should succeed GET /scores/leaderboard with token', async () => {
       const res = await request(app)
-        .get('/scores')
+        .get('/scores/leaderboard')
         .set('Authorization', `Bearer ${token}`);
 
       expect(res.statusCode).toBe(200);
@@ -122,7 +126,7 @@ describe('API Endpoints Tests', () => {
     it('should fail POST /scores without token', async () => {
       const res = await request(app)
         .post('/scores')
-        .send({ score: 123 });
+        .send({ playerId: userId, score: 123 });
 
       expect(res.statusCode).toBe(401);
     });
@@ -131,7 +135,7 @@ describe('API Endpoints Tests', () => {
       const res = await request(app)
         .post('/scores')
         .set('Authorization', `Bearer ${token}`)
-        .send({ score: 123 });
+        .send({ playerId: userId, score: 123 });
 
       expect(res.statusCode).toBe(201);
       expect(res.body.message).toMatch(/score enregistré/i);
@@ -144,8 +148,7 @@ describe('API Endpoints Tests', () => {
       const res = await request(app)
         .post('/players/register')
         .send({
-          username: 'sqlinject',
-          email: "' OR '1'='1",
+          username: "' OR '1'='1",
           password: 'Password123!'
         });
 
@@ -157,7 +160,6 @@ describe('API Endpoints Tests', () => {
         .post('/players/register')
         .send({
           username: '<script>alert(1)</script>',
-          email: 'safeemail@example.com',
           password: 'Password123!'
         });
 
@@ -172,19 +174,7 @@ describe('API Endpoints Tests', () => {
         .post('/players/register')
         .send({
           username: 'shortpass',
-          email: 'shortpass@example.com',
           password: '123'
-        });
-      expect(res.statusCode).toBe(400);
-    });
-
-    it('should reject invalid email', async () => {
-      const res = await request(app)
-        .post('/players/register')
-        .send({
-          username: 'invalidemail',
-          email: 'invalid-email',
-          password: 'Password123!'
         });
       expect(res.statusCode).toBe(400);
     });
@@ -194,6 +184,16 @@ describe('API Endpoints Tests', () => {
         .post('/players/register')
         .send({});
       expect(res.statusCode).toBe(400);
+    });
+  });
+});
+
+afterAll(async () => {
+  // Ferme proprement la connexion DB après tous les tests
+  await new Promise((resolve, reject) => {
+    db.end(err => {
+      if (err) return reject(err);
+      resolve();
     });
   });
 });

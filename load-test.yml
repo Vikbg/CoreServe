@@ -1,0 +1,42 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60         # test de 1 minute
+      arrivalRate: 5       # 5 utilisateurs/sec au début
+      rampTo: 50           # augmente progressivement à 50/sec
+  processor: "./token-hook.js" # logique JS externe pour stocker et injecter le token
+  payload:
+    path: "users.csv"
+    fields:
+      - username
+      - password
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - name: "Test complet de l'API"
+    flow:
+      - post:
+          url: "/players/register"
+          json:
+            username: "{{ username }}"
+            password: "{{ password }}"
+      - post:
+          url: "/players/login"
+          json:
+            username: "{{ username }}"
+            password: "{{ password }}"
+          capture:
+            json: "$.token"
+            as: "authToken"
+      - think: 1
+      - get:
+          url: "/scores/leaderboard"
+      - think: 1
+      - post:
+          url: "/scores/add"
+          headers:
+            Authorization: "Bearer {{ authToken }}"
+          json:
+            score: "{{ $randomNumber(1, 10000) }}"
