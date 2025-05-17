@@ -46,3 +46,4 @@ perfs-tests/
 
 # Configuration files
 .env
+dump.rdb
