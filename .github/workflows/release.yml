@@ -10,20 +10,21 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Using a slightly newer version
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4 # Using a slightly newer version
         with:
-          node-version: 16
+          node-version: 18 # Recommended to use a supported Node.js LTS version
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3 # Using a slightly newer version
         with:
           version: 8
+          run_install: false # We will run install manually later
 
       - name: Cache pnpm store
-        uses: actions/cache@v3
+        uses: actions/cache@v4 # Using a slightly newer version
         with:
           path: ~/.pnpm-store
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -34,17 +35,22 @@ jobs:
         run: pnpm install
 
       - name: Get version from package.json
-        id: get_version
-        run: echo "VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_ENV
+        id: get_version # Corrected indentation
+        run: | # Corrected indentation
+          VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV # Correct way to set environment variable
 
       - name: Check if tag already exists
         id: tag_check
         run: |
-          if git rev-parse "v${{ env.VERSION }}" >/dev/null 2>&1; then
-            echo "exists=true" >> $GITHUB_OUTPUT
+          TAG_REF="refs/tags/v${{ env.VERSION }}"
+          if git ls-remote --exit-code origin $TAG_REF > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT" # Corrected output syntax
+            echo "Tag v${{ env.VERSION }} already exists."
           else
-            echo "exists=false" >> $GITHUB_OUTPUT
-        continue-on-error: true
+            echo "exists=false" >> "$GITHUB_OUTPUT" # Corrected output syntax
+            echo "Tag v${{ env.VERSION }} does not exist."
+          fi
 
       - name: Create GitHub Release
         if: steps.tag_check.outputs.exists == 'false'
@@ -54,15 +60,7 @@ jobs:
           name: "v${{ env.VERSION }}"
           body: |
             Release automatique basée sur la version package.json
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Push tag
-        if: steps.tag_check.outputs.exists == 'false'
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git tag -a "v${{ env.VERSION }}" -m "Release v${{ env.VERSION }}"
-          git push origin "v${{ env.VERSION }}"
+          draft: false # Set to true if you want to create a draft release
+          prerelease: false # Set to true if it's a prerelease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
