@@ -1,18 +1,24 @@
-const express = require('express');
-const router = express.Router();
-const scoreController = require('../controllers/scoreController');
-const cache = require('../middlewares/cache');
-const authenticateToken = require('../middlewares/authMiddleware');
+import express from "express";
+import {
+  submitScore,
+  getLeaderboard,
+  getPlayerScores,
+} from "../controllers/scoreController.js";
+import { cache } from "../middlewares/cache.js";
+import authenticateToken from "../middlewares/authMiddleware.js";
+import apiKeyMiddleware from "../middlewares/apiKeyAuth.js";
 
-router.use(authenticateToken); // Toutes les routes sont protégées
+const router = express.Router();
+
+router.use(apiKeyMiddleware, authenticateToken); // Toutes les routes sont protégées
 
 // Soumettre un score
-router.post('/', scoreController.submitScore);
+router.post("/", submitScore);
 
 // Récupérer les meilleurs scores (classement général)
-router.get('/leaderboard', scoreController.getLeaderboard);
+router.get("/leaderboard", cache, getLeaderboard);
 
 // Récupérer tous les scores d’un joueur spécifique
-router.get('/:id', scoreController.getPlayerScores);
+router.get("/:id", cache, getPlayerScores);
 
-module.exports = router;
+export default router;

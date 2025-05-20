@@ -1,10 +1,15 @@
-const express = require('express');
+import express from "express";
+import { register, login, getMe } from "../controllers/authController.js";
+import {
+  registerValidator,
+  loginValidator,
+} from "../middlewares/validators/authValidator.js";
+import { validationResult } from "express-validator";
+import authenticateToken from "../middlewares/authMiddleware.js";
+import apiKeyMiddleware from "../middlewares/apiKeyAuth.js";
+
 const router = express.Router();
-const authController = require('../controllers/authController');
-const { registerValidator, loginValidator } = require('../middlewares/validators/authValidator');
-const { validationResult } = require('express-validator');
-const cache = require('../middlewares/cache');
-const authenticateToken = require('../middlewares/authMiddleware');
+router.use(apiKeyMiddleware);
 
 const validate = (req, res, next) => {
   const errors = validationResult(req);
@@ -14,8 +19,8 @@ const validate = (req, res, next) => {
   next();
 };
 
-router.post('/register', registerValidator, validate, authController.register); // pas de cache ici
-router.post('/login', loginValidator, validate, authController.login); // pas de cache ici
-router.get('/me', authenticateToken, cache, authController.getMe); // cache ici sur GET
+router.post("/register", registerValidator, validate, register);
+router.post("/login", loginValidator, validate, login);
+router.get("/me", authenticateToken, getMe);
 
-module.exports = router;
+export default router;
