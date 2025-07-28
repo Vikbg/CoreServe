@@ -62,7 +62,7 @@ importers:
         version: 7.27.2(@babel/core@7.27.1)
       artillery:
         specifier: ^2.0.23
-        version: 2.0.23(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)
+        version: 2.0.23(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.4.5)
       babel-jest:
         specifier: ^29.7.0
         version: 29.7.0(@babel/core@7.27.1)
@@ -73,8 +73,8 @@ importers:
         specifier: ^10.1.5
         version: 10.1.5(eslint@9.27.0)
       eslint-plugin-prettier:
-        specifier: ^5.4.0
-        version: 5.4.0(eslint-config-prettier@10.1.5(eslint@9.27.0))(eslint@9.27.0)(prettier@3.5.3)
+        specifier: ^5.5.3
+        version: 5.5.3(eslint-config-prettier@10.1.5(eslint@9.27.0))(eslint@9.27.0)(prettier@3.5.3)
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@22.15.18)
@@ -1482,8 +1482,8 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
-  '@pkgr/core@0.2.4':
-    resolution: {integrity: sha512-ROFF39F6ZrnzSUEmQQZUar0Jt4xVoP9WnDRdWwF4NNcXs3xBTLgBUDoOwW141y1jP+S8nahIbdxbFC7IShw9Iw==}
+  '@pkgr/core@0.2.9':
+    resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
   '@playwright/browser-chromium@1.52.0':
@@ -2899,8 +2899,8 @@ packages:
     peerDependencies:
       eslint: '>=7.0.0'
 
-  eslint-plugin-prettier@5.4.0:
-    resolution: {integrity: sha512-BvQOvUhkVQM1i63iMETK9Hjud9QhqBnbtT1Zc642p9ynzBuCe5pybkOnvqZIBypXmMlsGcnU4HZ8sCTPfpAexA==}
+  eslint-plugin-prettier@5.5.3:
+    resolution: {integrity: sha512-NAdMYww51ehKfDyDhv59/eIItUVzU0Io9H2E8nHNGKEeeqlnci+1gCvrHib6EmZdf6GxF+LCV5K7UC65Ezvw7w==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       '@types/eslint': '>=8.0.0'
@@ -4971,10 +4971,12 @@ packages:
   superagent@10.2.1:
     resolution: {integrity: sha512-O+PCv11lgTNJUzy49teNAWLjBZfc+A1enOwTpLlH6/rsvKcTwcdTT8m9azGkVqM7HBl5jpyZ7KTPhHweokBcdg==}
     engines: {node: '>=14.18.0'}
+    deprecated: Please upgrade to superagent v10.2.2+, see release notes at https://github.com/forwardemail/superagent/releases/tag/v10.2.2 - maintenance is supported by Forward Email @ https://forwardemail.net
 
   supertest@7.1.1:
     resolution: {integrity: sha512-aI59HBTlG9e2wTjxGJV+DygfNLgnWbGdZxiA/sgrnNNikIW8lbDvCtF6RnhZoJ82nU7qv7ZLjrvWqCEm52fAmw==}
     engines: {node: '>=14.18.0'}
+    deprecated: Please upgrade to supertest v7.1.3+, see release notes at https://github.com/forwardemail/supertest/releases/tag/v7.1.3 - maintenance is supported by Forward Email @ https://forwardemail.net
 
   supports-color@5.5.0:
     resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}
@@ -4997,8 +4999,8 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
-  synckit@0.11.6:
-    resolution: {integrity: sha512-2pR2ubZSV64f/vqm9eLPz/KOvR9Dm+Co/5ChLgeHl0yEDRc6h5hXHoxEQH8Y5Ljycozd3p1k5TTSVdzYGkPvLw==}
+  synckit@0.11.11:
+    resolution: {integrity: sha512-MeQTA1r0litLUf0Rp/iisCaL8761lKAZHaimlbGK4j0HysC4PLfqygQj9srcs0m2RdtDYnF8UuYyKpbjHYp7Jw==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
   tap-parser@16.0.1:
@@ -6993,22 +6995,6 @@ snapshots:
       typescript: 5.4.5
       v8-compile-cache-lib: 3.0.1
 
-  '@isaacs/ts-node-temp-fork-for-pr-2009@10.9.7(@types/node@22.15.18)(typescript@5.8.3)':
-    dependencies:
-      '@cspotcode/source-map-support': 0.8.1
-      '@tsconfig/node14': 14.1.3
-      '@tsconfig/node16': 16.1.3
-      '@tsconfig/node18': 18.2.4
-      '@tsconfig/node20': 20.1.5
-      '@types/node': 22.15.18
-      acorn: 8.14.1
-      acorn-walk: 8.3.4
-      arg: 4.1.3
-      diff: 4.0.2
-      make-error: 1.3.6
-      typescript: 5.8.3
-      v8-compile-cache-lib: 3.0.1
-
   '@istanbuljs/load-nyc-config@1.1.0':
     dependencies:
       camelcase: 5.3.1
@@ -7568,7 +7554,7 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@pkgr/core@0.2.4': {}
+  '@pkgr/core@0.2.9': {}
 
   '@playwright/browser-chromium@1.52.0':
     dependencies:
@@ -8208,16 +8194,6 @@ snapshots:
       - '@types/node'
       - typescript
 
-  '@tapjs/typescript@1.4.13(@tapjs/core@2.1.6(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/node@22.15.18)(typescript@5.8.3)':
-    dependencies:
-      '@isaacs/ts-node-temp-fork-for-pr-2009': 10.9.7(@types/node@22.15.18)(typescript@5.8.3)
-      '@tapjs/core': 2.1.6(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-    transitivePeerDependencies:
-      - '@swc/core'
-      - '@swc/wasm'
-      - '@types/node'
-      - typescript
-
   '@tapjs/worker@2.0.8(@tapjs/core@2.1.6(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
       '@tapjs/core': 2.1.6(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -8470,9 +8446,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  artillery-plugin-apdex@1.14.0(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3):
+  artillery-plugin-apdex@1.14.0(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.4.5):
     dependencies:
-      tap: 19.2.5(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)
+      tap: 19.2.5(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.4.5)
     transitivePeerDependencies:
       - '@swc/core'
       - '@swc/wasm'
@@ -8554,7 +8530,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  artillery@2.0.23(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3):
+  artillery@2.0.23(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.4.5):
     dependencies:
       '@artilleryio/int-commons': 2.14.0
       '@artilleryio/int-core': 2.18.0
@@ -8568,7 +8544,7 @@ snapshots:
       '@oclif/plugin-not-found': 3.2.51(@types/node@22.15.18)
       archiver: 5.3.2
       artillery-engine-playwright: 1.20.0
-      artillery-plugin-apdex: 1.14.0(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)
+      artillery-plugin-apdex: 1.14.0(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.4.5)
       artillery-plugin-ensure: 1.17.0
       artillery-plugin-expect: 2.17.0
       artillery-plugin-fake-data: 1.14.0
@@ -9413,12 +9389,12 @@ snapshots:
     dependencies:
       eslint: 9.27.0
 
-  eslint-plugin-prettier@5.4.0(eslint-config-prettier@10.1.5(eslint@9.27.0))(eslint@9.27.0)(prettier@3.5.3):
+  eslint-plugin-prettier@5.5.3(eslint-config-prettier@10.1.5(eslint@9.27.0))(eslint@9.27.0)(prettier@3.5.3):
     dependencies:
       eslint: 9.27.0
       prettier: 3.5.3
       prettier-linter-helpers: 1.0.0
-      synckit: 0.11.6
+      synckit: 0.11.11
     optionalDependencies:
       eslint-config-prettier: 10.1.5(eslint@9.27.0)
 
@@ -11815,9 +11791,9 @@ snapshots:
       path-scurry: 1.11.1
       rimraf: 5.0.10
 
-  synckit@0.11.6:
+  synckit@0.11.11:
     dependencies:
-      '@pkgr/core': 0.2.4
+      '@pkgr/core': 0.2.9
 
   tap-parser@16.0.1:
     dependencies:
@@ -11829,7 +11805,7 @@ snapshots:
       yaml: 2.8.0
       yaml-types: 0.3.0(yaml@2.8.0)
 
-  tap@19.2.5(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3):
+  tap@19.2.5(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.4.5):
     dependencies:
       '@tapjs/after': 1.1.31(@tapjs/core@2.1.6(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@tapjs/after-each': 2.0.8(@tapjs/core@2.1.6(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
@@ -11848,7 +11824,7 @@ snapshots:
       '@tapjs/spawn': 2.0.8(@tapjs/core@2.1.6(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@tapjs/stdin': 2.0.8(@tapjs/core@2.1.6(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@tapjs/test': 2.2.4(@tapjs/core@2.1.6(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@tapjs/typescript': 1.4.13(@tapjs/core@2.1.6(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/node@22.15.18)(typescript@5.8.3)
+      '@tapjs/typescript': 1.4.13(@tapjs/core@2.1.6(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/node@22.15.18)(typescript@5.4.5)
       '@tapjs/worker': 2.0.8(@tapjs/core@2.1.6(@types/node@22.15.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       resolve-import: 1.4.6
     transitivePeerDependencies:
