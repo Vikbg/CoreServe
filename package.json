@@ -28,7 +28,7 @@
     "mysql2": "^3.14.1",
     "node-cache": "^5.1.2",
     "ora": "^8.2.0",
-    "redis": "^5.0.1"
+    "redis": "^5.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.27.1",
