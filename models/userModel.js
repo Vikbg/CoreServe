@@ -1,47 +1,68 @@
 import db from "../db.js";
 import bcrypt from "bcryptjs";
 
-// Crée un nouveau joueur (hash le mot de passe)
-export function createPlayer(username, password, callback) {
-  bcrypt.hash(password, 10, (err, hashedPassword) => {
-    if (err) return callback(err);
+export async function createUser(username, password) {
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const [result] = await db
+    .promise()
+    .query("INSERT INTO players (username, password) VALUES (?, ?)", [
+      username,
+      hashedPassword,
+    ]);
 
-    const sql = "INSERT INTO players (username, password) VALUES (?, ?)";
-    db.query(sql, [username, hashedPassword], callback);
-  });
+  return result;
 }
 
-// Vérifie le login d’un joueur
-export function loginPlayer(username, password, callback) {
-  const sql = "SELECT * FROM players WHERE username = ?";
-  db.query(sql, [username], (err, results) => {
-    if (err) return callback(err);
-    if (results.length === 0) return callback(null, null);
+export async function authenticateUser(username, password) {
+  const [rows] = await db
+    .promise()
+    .query("SELECT id, username, password FROM players WHERE username = ?", [
+      username,
+    ]);
 
-    const player = results[0];
-    bcrypt.compare(password, player.password, (err, isMatch) => {
-      if (err) return callback(err);
-      if (!isMatch) return callback(null, null);
-      callback(null, player);
-    });
-  });
+  if (rows.length === 0) {
+    return null;
+  }
+
+  const user = rows[0];
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordValid) {
+    return null;
+  }
+
+  return { id: user.id, username: user.username };
 }
 
-// Récupère les infos d’un joueur par son ID
-export function getPlayerById(id, callback) {
-  const sql = "SELECT id, username FROM players WHERE id = ?";
-  db.query(sql, [id], (err, results) => {
-    if (err) return callback(err);
-    callback(null, results[0]);
-  });
+export async function getUserById(id) {
+  const [rows] = await db
+    .promise()
+    .query("SELECT id, username FROM players WHERE id = ? LIMIT 1", [id]);
+
+  return rows[0] ?? null;
 }
 
-// Trouve un joueur par username (utile pour vérifier doublon inscription)
-export function findUserByUsername(username, callback) {
-  const sql = "SELECT * FROM players WHERE username = ?";
-  db.query(sql, [username], (err, results) => {
-    if (err) return callback(err);
-    if (results.length === 0) return callback(null, null);
-    callback(null, results[0]);
-  });
+export async function findUserByUsername(username) {
+  const [rows] = await db
+    .promise()
+    .query("SELECT id, username FROM players WHERE username = ? LIMIT 1", [
+      username,
+    ]);
+
+  return rows[0] ?? null;
+}
+
+export async function getUserWithScoreById(id) {
+  const [rows] = await db.promise().query(
+    `
+    SELECT players.id, players.username, scores.score, scores.updated_at
+    FROM players
+    LEFT JOIN scores ON players.id = scores.player_id
+    WHERE players.id = ?
+    LIMIT 1
+  `,
+    [id],
+  );
+
+  return rows[0] ?? null;
 }

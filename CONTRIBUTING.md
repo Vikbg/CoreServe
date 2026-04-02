@@ -1,54 +1,38 @@
-Contribuer à CoreServe
+# Contributing to CoreServe
 
-Merci de vouloir contribuer à CoreServe !
+Thanks for contributing to CoreServe.
 
-## Étapes pour contribuer
+## Workflow
 
-1. **Fork** ce dépôt
-2. Clone ton fork :
-   ```bash
-   git clone https://github.com/ton-username/CoreServe.git
-   cd CoreServe
+1. Fork the repository.
+2. Clone your fork:
 
-3. Crée une branche pour ta fonctionnalité :
+```bash
+git clone https://github.com/your-username/CoreServe.git
+cd CoreServe
+```
 
-git checkout -b feature/ma-fonctionnalite
+3. Create a feature branch:
 
+```bash
+git checkout -b feature/your-feature
+```
 
-4. Code ta fonctionnalité
+4. Make focused changes.
+5. Run the checks:
 
-
-5. Assure-toi que les tests passent :
-
+```bash
 pnpm test
+pnpm lint
+```
 
+6. Commit your work with a clear message.
+7. Push your branch and open a pull request.
 
-6. Commit ton travail :
+## Guidelines
 
-git commit -m "Ajout de ma fonctionnalité"
-
-
-7. Push sur ton fork :
-
-git push origin feature/ma-fonctionnalite
-
-
-8. Ouvre une Pull Request depuis GitHub
-
-
-
-Bonnes pratiques
-
-Garde une architecture claire
-
-Écris des messages de commit explicites
-
-Préfère des fonctions simples, réutilisables
-
-Documente tes endpoints si tu ajoutes des routes
-
-
-
----
-
-Merci pour ta contribution !
+- Keep the architecture consistent with the existing structure.
+- Prefer small, reusable functions over large handlers.
+- Update documentation when API behavior changes.
+- Add or adjust tests when fixing bugs or changing logic.
+- Keep commit messages explicit and descriptive.

@@ -1,154 +1,112 @@
 # CoreServe
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)  
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D14-brightgreen)](https://nodejs.org/)  
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org/)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/Vikbg/CoreServe/nodejs.yml?branch=main)](https://github.com/Vikbg/CoreServe/actions)
 
----
+CoreServe is a modular Node.js backend starter designed to give REST API projects a clean, maintainable foundation. It ships with authentication, API key protection, score endpoints, caching hooks, and a straightforward MVC-style structure.
 
-## 🚀 Présentation
+## Features
 
-**CoreServe** est un backend Node.js modulaire et léger, conçu pour fournir une base solide à des projets nécessitant une API REST bien organisée et maintenable.
+- Modular MVC-inspired architecture
+- JWT-based authentication
+- API key authorization with plan-based rate limiting
+- MariaDB integration through environment variables
+- Redis-backed response caching with graceful fallback
+- Jest and Supertest coverage for core HTTP flows
 
-Il inclut une architecture claire avec séparation des responsabilités (routes, contrôleurs, modèles, middlewares) ainsi qu’un système simple de gestion de la base de données.
+## Requirements
 
----
+- Node.js 18 or newer
+- MariaDB or MySQL
+- Redis (optional, but recommended for caching)
 
-## ⚙️ Fonctionnalités
+## Installation
 
-- Architecture MVC modulaire  
-- Gestion propre des routes et middlewares  
-- Connexion configurable à une base de données via `.env`  
-- Tests unitaires intégrés  
-- Support des variables d'environnement  
-- Facile à étendre et personnaliser  
-
----
-
-## 🛠️ Installation
-
-1. Clone le dépôt
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/Vikbg/CoreServe.git
 cd CoreServe
+```
 
-2. Installe les dépendances avec pnpm (ou npm si tu préfères)
+2. Install dependencies:
 
-
-
+```bash
 pnpm install
+```
 
-3. Configure les variables d’environnement
+3. Create a `.env` file in the project root:
 
-
-
-Crée un fichier .env à la racine (exemple minimal) :
-
+```dotenv
 DB_HOST=localhost
 DB_USER=root
-DB_PASS=motdepasse
-DB_NAME=triangle_db
+DB_PASSWORD=your_password
+DB_NAME=coreserve
+DB_NAME_TEST=coreserve_test
+JWT_SECRET=replace_this_with_a_secure_secret
+JWT_EXPIRES_IN=1h
 PORT=3000
+HOST=0.0.0.0
+REDIS_URL=redis://localhost:6379
+CORS_ORIGIN=http://localhost:3000
+JSON_LIMIT=10kb
+```
 
-4. Lance le serveur
+4. Start the server:
 
-
-
+```bash
 pnpm start
+```
 
-Le serveur écoute alors sur le port configuré (ex: http://localhost:3000).
+The API will be available at `http://localhost:3000` unless you configure a different host or port.
 
+## Scripts
 
----
-
-🧩 Structure du projet
-
-CoreServe/
-├── controllers/        # Logique métier et gestion des requêtes
-├── middlewares/        # Fonctions middleware pour requêtes HTTP
-├── models/             # Modèles de données (ex: schémas DB)
-├── routes/             # Définition des routes de l’API
-├── tests/              # Tests unitaires et d’intégration
-├── .env                # Variables d’environnement (non versionné)
-├── db.js               # Configuration et connexion à la base de données
-├── index.js            # Point d’entrée de l’application
-├── package.json        # Dépendances & scripts
-└── README.md           # Documentation principale (tu es ici)
-
-
----
-
-🧪 Tests
-
-Pour lancer les tests (basés sur Jest ou autre framework selon ton choix) :
-
+```bash
+pnpm start
+pnpm dev
 pnpm test
+pnpm lint
+```
 
+## Project Structure
 
----
+```text
+CoreServe/
+├── config/             # Shared configuration constants
+├── controllers/        # Route handlers and application logic
+├── docs/               # Project documentation
+├── middlewares/        # Authentication, validation, and caching layers
+├── models/             # Database access helpers
+├── routes/             # Express route definitions
+├── tests/              # Integration test suite
+├── utils/              # Shared utilities such as logging
+├── db.js               # MariaDB connection pool
+├── index.js            # App factory and server bootstrap
+├── redisClient.js      # Redis connection and cache helpers
+└── package.json        # Scripts and dependencies
+```
 
-📚 Utilisation
+## API Overview
 
-Tu peux étendre les routes, ajouter des modèles, et créer des middlewares personnalisés dans leurs dossiers respectifs.
+- `POST /players/register`: Create a new user account
+- `POST /players/login`: Authenticate and receive a JWT
+- `GET /players/me`: Fetch the authenticated user profile
+- `GET /scores/leaderboard`: Fetch the global leaderboard
+- `POST /scores`: Submit the authenticated user's score
+- `GET /scores/:id`: Fetch the authenticated user's score history
 
-Exemple rapide pour ajouter une route dans routes/example.js :
+See [docs/api.md](docs/api.md) for full request and response examples.
 
-const express = require('express');
-const router = express.Router();
+## Contributing
 
-router.get('/hello', (req, res) => {
-  res.json({ message: 'Hello from CoreServe!' });
-});
+Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md), keep changes focused, and make sure tests pass before opening a pull request.
 
-module.exports = router;
+## Security
 
-Et dans index.js tu importes et utilises cette route :
+If you discover a security issue, follow the reporting guidance in [SECURITY.md](SECURITY.md).
 
-const exampleRoutes = require('./routes/example');
-app.use('/api', exampleRoutes);
+## License
 
-
----
-
-💡 Contributions
-
-Les contributions sont les bienvenues ! Pour contribuer :
-
-1. Fork ce repo
-
-
-2. Crée ta branche (git checkout -b feature/ma-fonctionnalite)
-
-
-3. Commit tes changements (git commit -m 'Ajout de fonctionnalité')
-
-
-4. Push sur ta branche (git push origin feature/ma-fonctionnalite)
-
-
-5. Ouvre une Pull Request
-
-
-
-
----
-
-📜 Licence
-
-Ce projet est sous licence MIT - voir le fichier LICENSE pour plus de détails.
-
-
----
-
-🤝 Remerciements
-
-Merci d'utiliser CoreServe. Pour toute question, n’hésite pas à ouvrir une issue ou me contacter.
-
-
----
-
-Viktor
-CoreServe | 2025
-
----
+This project is released under the MIT License. See [LICENSE](LICENSE) for details.

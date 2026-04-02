@@ -59,7 +59,7 @@ jobs:
           tag_name: "v${{ env.VERSION }}"
           name: "v${{ env.VERSION }}"
           body: |
-            Release automatique basée sur la version package.json
+            Automatic release generated from the package.json version.
           draft: false # Set to true if you want to create a draft release
           prerelease: false # Set to true if it's a prerelease
         env:

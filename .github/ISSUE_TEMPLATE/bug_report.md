@@ -1,19 +1,19 @@
 ---
-name: Rapport de bug
-about: Signaler un bug pour améliorer CoreServe
-title: "[BUG] Titre clair et précis"
+name: Bug Report
+about: Report a bug to help improve CoreServe
+title: "[BUG] Short, clear title"
 labels: bug
 assignees: ''
 
 ---
 
-## Description du bug
+## Bug Description
 
-Décris le bug rencontré de manière concise et claire.
+Describe the issue clearly and concisely.
 
 ---
 
-## Étapes pour reproduire
+## Steps to Reproduce
 
 1. ...
 2. ...
@@ -21,22 +21,22 @@ Décris le bug rencontré de manière concise et claire.
 
 ---
 
-## Comportement attendu
+## Expected Behavior
 
-Quel comportement devrais-tu avoir ?
-
----
-
-## Captures d'écran (si possible)
+What behavior did you expect instead?
 
 ---
 
-## Informations techniques
-
-- Système : Windows/Linux/macOS
-- Version Node.js :
-- Navigateur (si applicable) :
+## Screenshots
 
 ---
 
-## Autres infos utiles
+## Technical Details
+
+- Operating system: Windows/Linux/macOS
+- Node.js version:
+- Browser (if applicable):
+
+---
+
+## Additional Context

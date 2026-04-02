@@ -1,49 +1,38 @@
-# Architecture du projet CoreServe
+# CoreServe Architecture
 
-## Vue d'ensemble
+## Overview
 
-CoreServe est un backend Node.js structuré selon une architecture modulaire basée sur le modèle MVC (Modèle-Vue-Contrôleur). Cette organisation facilite la maintenance, l’évolution et la compréhension du code.
+CoreServe uses a modular Express architecture inspired by MVC separation:
 
----
+- `routes/` maps HTTP endpoints to handlers.
+- `controllers/` contains request orchestration and response shaping.
+- `models/` owns database reads and writes.
+- `middlewares/` handles cross-cutting concerns such as authentication, API key enforcement, validation, and caching.
+- `utils/` contains reusable support code such as logging.
 
-## Structure des dossiers principaux
+## Request Flow
 
-- **controllers/**  
-  Contient la logique métier et la gestion des requêtes HTTP. Chaque contrôleur correspond à une ressource ou fonctionnalité.
+1. A request enters the Express app through `index.js`.
+2. Global middleware applies security headers, CORS rules, and JSON parsing.
+3. Route modules attach endpoint-specific middleware.
+4. Controllers validate assumptions, call model functions, and return JSON responses.
+5. Models interact with MariaDB through the shared connection pool in `db.js`.
+6. Cache reads and writes are routed through `redisClient.js` when Redis is available.
 
-- **models/**  
-  Définit les schémas de données et interactions avec la base de données.
+## Data Layer
 
-- **routes/**  
-  Définit les endpoints API et associe les routes aux contrôleurs correspondants.
+- `db.js` exports a MariaDB connection pool for concurrent access.
+- `models/userModel.js` manages user creation, lookup, and authentication helpers.
+- `models/scoreModel.js` manages leaderboard and per-user score persistence.
 
-- **middlewares/**  
-  Fonctions intermédiaires exécutées avant ou après les routes (ex: authentification, validation).
+## Security Layers
 
-- **tests/**  
-  Contient les tests unitaires et d’intégration pour assurer la qualité du code.
+- `middlewares/apiKeyAuth.js` validates API keys, applies plan-based rate limits, and rejects temporarily banned keys.
+- `middlewares/authMiddleware.js` verifies JWT bearer tokens.
+- `middlewares/validators/authValidator.js` validates registration and login payloads.
+- `helmet` and `cors` are configured at application startup.
 
----
+## Runtime Behavior
 
-## Point d’entrée
-
-Le fichier `index.js` initialise l’application, configure les middlewares globaux, connecte la base de données, et monte les routes.
-
----
-
-## Gestion de la base de données
-
-La connexion à la base de données est configurée dans `db.js` via des variables d’environnement. Ce module exporte la connexion pour être utilisée dans les modèles.
-
----
-
-## Flux des requêtes
-
-1. Une requête HTTP arrive sur un endpoint défini dans `routes/`.
-2. Le routeur redirige vers le contrôleur approprié.
-3. Le contrôleur traite la logique métier et interagit avec la base de données via les modèles.
-4. Le contrôleur retourne une réponse JSON au client.
-
----
-
-N’hésite pas à consulter les autres fichiers de documentation pour plus de détails sur l’API ou le déploiement.
+- `index.js` exports the Express app for tests and starts the HTTP server only when the file is executed directly.
+- `redisClient.js` degrades gracefully when Redis is unavailable, so the API can still serve traffic without cached responses.

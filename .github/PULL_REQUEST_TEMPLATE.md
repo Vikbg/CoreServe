@@ -1,42 +1,34 @@
 ---
-name: Rapport de bug
-about: Signaler un bug pour améliorer CoreServe
-title: "[BUG] Titre clair et précis"
-labels: bug
+name: Pull Request
+about: Submit changes to CoreServe
+title: "[PR] Short summary"
+labels: ""
 assignees: ''
 
 ---
 
-## Description du bug
+## Summary
 
-Décris le bug rencontré de manière concise et claire.
-
----
-
-## Étapes pour reproduire
-
-1. ...
-2. ...
-3. ...
+Describe the goal of this change and the main implementation details.
 
 ---
 
-## Comportement attendu
+## Testing
 
-Quel comportement devrais-tu avoir ?
-
----
-
-## Captures d'écran (si possible)
+- [ ] `pnpm lint`
+- [ ] `pnpm test`
+- [ ] Other:
 
 ---
 
-## Informations techniques
+## Checklist
 
-- Système : Windows/Linux/macOS
-- Version Node.js :
-- Navigateur (si applicable) :
+- [ ] Documentation updated if needed
+- [ ] Tests added or adjusted if needed
+- [ ] Breaking changes documented
 
 ---
 
-## Autres infos utiles
+## Notes
+
+Anything reviewers should pay attention to.

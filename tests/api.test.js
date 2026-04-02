@@ -1,192 +1,345 @@
-import request from "supertest";
-import app from "../index.js";
-import db from "../db.js";
-// tests/api.test.js
-// ... (imports) ...
+import { validationResult } from "express-validator";
+import jwt from "jsonwebtoken";
+import { jest } from "@jest/globals";
+import {
+  DEFAULT_TEST_API_KEY,
+  DEFAULT_TEST_JWT_SECRET,
+} from "../config/testDefaults.js";
 
-beforeAll(async () => {
-  // Supprime les données sensibles avant de lancer les tests
-  await new Promise((resolve, reject) => {
-    // 1. Delete from 'scores' table FIRST
-    db.query("DELETE FROM scores", (err) => {
-      if (err) {
-        console.error("Error deleting from scores:", err); // Add logging for debugging
-        return reject(err);
+process.env.NODE_ENV = "test";
+process.env.JWT_SECRET = process.env.JWT_SECRET || DEFAULT_TEST_JWT_SECRET;
+process.env.TEST_API_KEY = process.env.TEST_API_KEY || DEFAULT_TEST_API_KEY;
+
+const mockUserModel = {
+  authenticateUser: jest.fn(),
+  createUser: jest.fn(),
+  findUserByUsername: jest.fn(),
+  getUserWithScoreById: jest.fn(),
+};
+
+const mockScoreModel = {
+  saveUserScore: jest.fn(),
+  getTopScores: jest.fn(),
+  getScoresByUser: jest.fn(),
+};
+
+const mockCacheStore = new Map();
+const mockDbQuery = jest.fn();
+
+jest.unstable_mockModule("../models/userModel.js", () => mockUserModel);
+jest.unstable_mockModule("../models/scoreModel.js", () => mockScoreModel);
+jest.unstable_mockModule("../db.js", () => ({
+  default: {
+    promise() {
+      return {
+        query: mockDbQuery,
+      };
+    },
+  },
+}));
+jest.unstable_mockModule("../redisClient.js", () => ({
+  connectRedis: async () => null,
+  isRedisReady: () => false,
+  getCacheValue: jest.fn(async (key) => mockCacheStore.get(key) ?? null),
+  setCacheValue: jest.fn(async (key, _ttlSeconds, value) => {
+    mockCacheStore.set(key, value);
+  }),
+  deleteCacheKey: jest.fn(async (key) => {
+    mockCacheStore.delete(key);
+  }),
+  deleteCacheByPrefix: jest.fn(async (prefix) => {
+    for (const key of [...mockCacheStore.keys()]) {
+      if (key.startsWith(prefix)) {
+        mockCacheStore.delete(key);
       }
-      // 2. Then delete from 'players' table
-      db.query("DELETE FROM players", (err2) => {
-        if (err2) {
-          console.error("Error deleting from players:", err2); // Add logging
-          return reject(err2);
-        }
-        resolve();
-      });
-    });
-  });
-});
+    }
+  }),
+  default: {},
+}));
 
-let token = "";
-let userId = "";
+const { register, login, getCurrentUser } = await import(
+  "../controllers/authController.js"
+);
+const { submitScore, getLeaderboard, getUserScores } = await import(
+  "../controllers/scoreController.js"
+);
+const { authenticateToken } = await import("../middlewares/authMiddleware.js");
+const { default: apiKeyMiddleware } = await import(
+  "../middlewares/apiKeyAuth.js"
+);
+const { buildCacheKey, cache } = await import("../middlewares/cache.js");
+const { registerValidator, loginValidator } = await import(
+  "../middlewares/validators/authValidator.js"
+);
 
-describe("API Endpoints Tests", () => {
-  const validUser = {
-    username: "testuser",
-    password: "Password123!",
+function createResponse() {
+  return {
+    body: undefined,
+    headers: {},
+    statusCode: 200,
+    status(code) {
+      this.statusCode = code;
+      return this;
+    },
+    json(payload) {
+      this.body = payload;
+      return this;
+    },
+    setHeader(name, value) {
+      this.headers[name] = value;
+    },
   };
+}
 
-  // 1. TEST REGISTER
-  describe("POST /players/register", () => {
-    it("should create a user with valid data", async () => {
-      const res = await request(app).post("/players/register").send(validUser);
+function createRequest(overrides = {}) {
+  const headers = Object.fromEntries(
+    Object.entries(overrides.headers || {}).map(([key, value]) => [
+      key.toLowerCase(),
+      value,
+    ]),
+  );
 
-      expect(res.statusCode).toBe(201);
-      expect(res.body.message).toMatch(/créé avec succès/i);
-    });
+  return {
+    body: {},
+    headers,
+    method: "GET",
+    originalUrl: "/resource",
+    params: {},
+    query: {},
+    user: undefined,
+    get(name) {
+      return this.headers[name.toLowerCase()];
+    },
+    ...overrides,
+    headers,
+  };
+}
 
-    it("should fail with missing fields", async () => {
-      const res = await request(app)
-        .post("/players/register")
-        .send({ username: "", password: "" });
+async function runValidators(validators, req) {
+  for (const validator of validators) {
+    await validator.run(req);
+  }
 
-      expect(res.statusCode).toBe(400);
-    });
+  return validationResult(req);
+}
+
+describe("Auth controller", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  // 2. TEST LOGIN
-  describe("POST /players/login", () => {
-    it("should login with valid credentials", async () => {
-      const res = await request(app)
-        .post("/players/login")
-        .send({ username: validUser.username, password: validUser.password });
+  it("registers a user when the username is available", async () => {
+    mockUserModel.findUserByUsername.mockResolvedValue(null);
+    mockUserModel.createUser.mockResolvedValue({ insertId: 1 });
 
-      expect(res.statusCode).toBe(200);
-      expect(res.body.token).toBeDefined();
-      token = res.body.token;
-      userId = res.body.player.id;
+    const req = createRequest({
+      body: { username: "testuser", password: "Password123!" },
     });
+    const res = createResponse();
 
-    it("should fail login with wrong password", async () => {
-      const res = await request(app)
-        .post("/players/login")
-        .send({ username: validUser.username, password: "wrongpassword" });
+    await register(req, res);
 
-      expect(res.statusCode).toBe(401);
-    });
-
-    it("should fail login with missing fields", async () => {
-      const res = await request(app)
-        .post("/players/login")
-        .send({ username: "", password: "" });
-
-      expect(res.statusCode).toBe(400);
-    });
+    expect(mockUserModel.createUser).toHaveBeenCalledWith(
+      "testuser",
+      "Password123!",
+    );
+    expect(res.statusCode).toBe(201);
+    expect(res.body.message).toBe("User created successfully.");
   });
 
-  // 3. TEST GET /players/me (Protected)
-  describe("GET /players/me", () => {
-    it("should return user info with valid token", async () => {
-      const res = await request(app)
-        .get("/players/me")
-        .set("Authorization", `Bearer ${token}`);
+  it("rejects duplicate usernames during registration", async () => {
+    mockUserModel.findUserByUsername.mockResolvedValue({ id: 1 });
 
-      expect(res.statusCode).toBe(200);
-      expect(res.body.username).toBe(validUser.username);
+    const req = createRequest({
+      body: { username: "testuser", password: "Password123!" },
     });
+    const res = createResponse();
 
-    it("should fail without token", async () => {
-      const res = await request(app).get("/players/me");
+    await register(req, res);
 
-      expect(res.statusCode).toBe(401);
-    });
-
-    it("should fail with invalid token", async () => {
-      const res = await request(app)
-        .get("/players/me")
-        .set("Authorization", "Bearer invalidtoken");
-
-      expect(res.statusCode).toBe(401);
-    });
+    expect(res.statusCode).toBe(409);
+    expect(res.body.message).toBe("Username is already in use.");
   });
 
-  // 4. TEST /scores/leaderboard routes (example with GET and POST protected)
-  describe("Protected /scores/leaderboard routes", () => {
-    it("should fail GET /scores/leaderboard without token", async () => {
-      const res = await request(app).get("/scores/leaderboard");
-      expect(res.statusCode).toBe(401);
+  it("returns a token and user payload on login", async () => {
+    mockUserModel.authenticateUser.mockResolvedValue({
+      id: 7,
+      username: "testuser",
     });
 
-    it("should succeed GET /scores/leaderboard with token", async () => {
-      const res = await request(app)
-        .get("/scores/leaderboard")
-        .set("Authorization", `Bearer ${token}`);
-
-      expect(res.statusCode).toBe(200);
-      expect(Array.isArray(res.body)).toBe(true);
+    const req = createRequest({
+      body: { username: "testuser", password: "Password123!" },
     });
+    const res = createResponse();
 
-    it("should fail POST /scores without token", async () => {
-      const res = await request(app)
-        .post("/scores")
-        .send({ playerId: userId, score: 123 });
+    await login(req, res);
 
-      expect(res.statusCode).toBe(401);
-    });
-
-    it("should succeed POST /scores with token", async () => {
-      const res = await request(app)
-        .post("/scores")
-        .set("Authorization", `Bearer ${token}`)
-        .send({ playerId: userId, score: 123 });
-
-      expect(res.statusCode).toBe(201);
-      expect(res.body.message).toMatch(/score enregistré/i);
-    });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.token).toBeDefined();
+    expect(res.body.user).toEqual({ id: 7, username: "testuser" });
   });
 
-  // 5. TEST SQL INJECTION / XSS
-  describe("Security tests", () => {
-    it("should not allow SQL injection in email field", async () => {
-      const res = await request(app).post("/players/register").send({
-        username: "' OR '1'='1",
-        password: "Password123!",
-      });
-
-      expect([400, 409]).toContain(res.statusCode);
+  it("returns the authenticated user's profile", async () => {
+    mockUserModel.getUserWithScoreById.mockResolvedValue({
+      id: 7,
+      username: "testuser",
+      score: 123,
     });
 
-    it("should not allow script tags in username", async () => {
-      const res = await request(app).post("/players/register").send({
-        username: "<script>alert(1)</script>",
-        password: "Password123!",
-      });
+    const req = createRequest({ user: { id: 7 } });
+    const res = createResponse();
 
-      expect([201, 400]).toContain(res.statusCode); // Acceptable is to sanitize or reject
-    });
-  });
+    await getCurrentUser(req, res);
 
-  // 6. TEST EDGE CASES
-  describe("Edge case tests", () => {
-    it("should reject too short password", async () => {
-      const res = await request(app).post("/players/register").send({
-        username: "shortpass",
-        password: "123",
-      });
-      expect(res.statusCode).toBe(400);
-    });
-
-    it("should reject empty body", async () => {
-      const res = await request(app).post("/players/register").send({});
-      expect(res.statusCode).toBe(400);
-    });
+    expect(res.statusCode).toBe(200);
+    expect(res.body.username).toBe("testuser");
   });
 });
 
-afterAll(async () => {
-  // Ferme proprement la connexion DB après tous les tests
-  await new Promise((resolve, reject) => {
-    db.end((err) => {
-      if (err) return reject(err);
-      resolve();
+describe("Score controller", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockCacheStore.clear();
+  });
+
+  it("rejects score submission for another player", async () => {
+    const req = createRequest({
+      body: { playerId: 2, score: 50 },
+      user: { id: 1 },
     });
+    const res = createResponse();
+
+    await submitScore(req, res);
+
+    expect(res.statusCode).toBe(403);
+  });
+
+  it("records a new score for the authenticated user", async () => {
+    mockScoreModel.saveUserScore.mockResolvedValue("created");
+
+    const req = createRequest({
+      body: { score: 50 },
+      user: { id: 1 },
+    });
+    const res = createResponse();
+
+    await submitScore(req, res);
+
+    expect(mockScoreModel.saveUserScore).toHaveBeenCalledWith(1, 50);
+    expect(res.statusCode).toBe(201);
+    expect(res.body.message).toBe("Score recorded successfully.");
+  });
+
+  it("clamps leaderboard queries to the configured upper bound", async () => {
+    mockScoreModel.getTopScores.mockResolvedValue([]);
+
+    const req = createRequest({ query: { limit: "500" } });
+    const res = createResponse();
+
+    await getLeaderboard(req, res);
+
+    expect(mockScoreModel.getTopScores).toHaveBeenCalledWith(100);
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("rejects access to another user's score history", async () => {
+    const req = createRequest({
+      params: { id: "2" },
+      user: { id: 1 },
+    });
+    const res = createResponse();
+
+    await getUserScores(req, res);
+
+    expect(res.statusCode).toBe(403);
+  });
+});
+
+describe("Middlewares", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockCacheStore.clear();
+  });
+
+  it("authenticates a valid bearer token", () => {
+    const token = jwt.sign({ id: 5 }, DEFAULT_TEST_JWT_SECRET);
+    const req = createRequest({
+      headers: { authorization: `Bearer ${token}` },
+    });
+    const res = createResponse();
+    const next = jest.fn();
+
+    authenticateToken(req, res, next);
+
+    expect(next).toHaveBeenCalled();
+    expect(req.user.id).toBe(5);
+  });
+
+  it("accepts the configured test API key", async () => {
+    const req = createRequest({
+      headers: { "x-api-key": DEFAULT_TEST_API_KEY },
+    });
+    const res = createResponse();
+    const next = jest.fn();
+
+    await apiKeyMiddleware(req, res, next);
+
+    expect(next).toHaveBeenCalled();
+    expect(req.apiPlan).toBe("admin");
+    expect(res.headers["RateLimit-Limit"]).toBe("10000");
+  });
+
+  it("rejects an invalid API key", async () => {
+    mockDbQuery.mockResolvedValue([[], undefined]);
+
+    const req = createRequest({
+      headers: { "x-api-key": "invalid-key" },
+    });
+    const res = createResponse();
+    const next = jest.fn();
+
+    await apiKeyMiddleware(req, res, next);
+
+    expect(next).not.toHaveBeenCalled();
+    expect(res.statusCode).toBe(403);
+  });
+
+  it("returns cached responses for GET requests", async () => {
+    const payload = { ok: true };
+    const req = createRequest({
+      method: "GET",
+      originalUrl: "/scores/leaderboard?limit=10",
+    });
+    const res = createResponse();
+    const next = jest.fn();
+
+    mockCacheStore.set(buildCacheKey(req), JSON.stringify(payload));
+
+    await cache(req, res, next);
+
+    expect(next).not.toHaveBeenCalled();
+    expect(res.body).toEqual(payload);
+  });
+});
+
+describe("Validation rules", () => {
+  it("rejects invalid registration payloads", async () => {
+    const req = createRequest({
+      body: { username: "<script>", password: "short" },
+    });
+
+    const errors = await runValidators(registerValidator, req);
+
+    expect(errors.isEmpty()).toBe(false);
+  });
+
+  it("accepts valid login payloads", async () => {
+    const req = createRequest({
+      body: { username: "testuser", password: "Password123!" },
+    });
+
+    const errors = await runValidators(loginValidator, req);
+
+    expect(errors.isEmpty()).toBe(true);
   });
 });

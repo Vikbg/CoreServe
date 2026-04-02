@@ -1,4 +1,3 @@
-// logger.mjs
 import chalk from "chalk";
 import dayjs from "dayjs";
 import ora from "ora";
@@ -21,7 +20,6 @@ export const log = {
   error: (msg) => console.error(`${chalk.gray(now())} ${levels.error} ${msg}`),
   debug: (msg) => console.debug(`${chalk.gray(now())} ${levels.debug} ${msg}`),
 
-  // Animation spinner
   spinner: (text) =>
     ora({
       text,

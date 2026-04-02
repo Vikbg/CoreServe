@@ -1,101 +1,84 @@
-// controllers/authController.js
 import {
+  authenticateUser,
+  createUser,
   findUserByUsername,
-  createPlayer,
-  loginPlayer,
-  getPlayerById,
+  getUserWithScoreById,
 } from "../models/userModel.js";
 import { log } from "../utils/logger.js";
 import jwt from "jsonwebtoken";
-import { validationResult } from "express-validator";
 import dotenv from "dotenv";
+import { DEFAULT_TEST_JWT_SECRET } from "../config/testDefaults.js";
+
 dotenv.config();
 
-function toPromise(fn, ...args) {
-  return new Promise((resolve, reject) => {
-    fn(...args, (err, result) => {
-      if (err) reject(err);
-      else resolve(result);
-    });
+function createJwtToken(user) {
+  const jwtSecret =
+    process.env.JWT_SECRET ||
+    (process.env.NODE_ENV === "test" ? DEFAULT_TEST_JWT_SECRET : "");
+
+  if (!jwtSecret) {
+    throw new Error("JWT secret is not configured.");
+  }
+
+  return jwt.sign({ id: user.id, username: user.username }, jwtSecret, {
+    expiresIn: process.env.JWT_EXPIRES_IN || "1h",
   });
 }
 
-// Inscription
 export async function register(req, res) {
-  // Validation des champs
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { username, password } = req.body;
 
   try {
-    // Vérifie si username existe déjà
-    const existingUser = await toPromise(findUserByUsername, username);
+    const existingUser = await findUserByUsername(username);
     if (existingUser) {
-      return res
-        .status(409)
-        .json({ message: "Nom d’utilisateur déjà utilisé." });
+      return res.status(409).json({ message: "Username is already in use." });
     }
 
-    // Crée l’utilisateur (hash inside createPlayer)
-    await toPromise(createPlayer, username, password);
+    await createUser(username, password);
 
-    return res.status(201).json({ message: "Utilisateur créé avec succès." });
-  } catch (err) {
-    console.error("Registration error:", err);
-    return res.status(500).json({ message: "Erreur serveur." });
+    return res.status(201).json({ message: "User created successfully." });
+  } catch (error) {
+    log.error(`Registration error: ${error.message}`);
+    return res.status(500).json({ message: "Internal server error." });
   }
 }
 
-// Connexion
 export async function login(req, res) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { username, password } = req.body;
 
   try {
-    const user = await toPromise(loginPlayer, username, password);
+    const user = await authenticateUser(username, password);
     if (!user) {
-      return res.status(401).json({ message: "Identifiants invalides." });
+      return res.status(401).json({ message: "Invalid credentials." });
     }
 
-    const token = jwt.sign(
-      { id: user.id, username: user.username },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || "1h" },
-    );
+    const token = createJwtToken(user);
 
     return res.status(200).json({
-      message: "Connexion réussie.",
+      message: "Login successful.",
       token,
-      player: { id: user.id, username: user.username },
+      user,
     });
-  } catch (err) {
-    console.error("Login error:", err);
-    return res.status(500).json({ message: "Erreur serveur." });
+  } catch (error) {
+    log.error(`Login error: ${error.message}`);
+    return res.status(500).json({ message: "Internal server error." });
   }
 }
 
-// Récupérer infos joueur connecté
-export async function getMe(req, res) {
+export async function getCurrentUser(req, res) {
   try {
     if (!req.user || !req.user.id) {
-      return res.status(401).json({ message: "Utilisateur non authentifié." });
+      return res.status(401).json({ message: "Unauthenticated user." });
     }
 
-    const user = await toPromise(getPlayerById, req.user.id);
+    const user = await getUserWithScoreById(req.user.id);
     if (!user) {
-      return res.status(404).json({ message: "Utilisateur non trouvé." });
+      return res.status(404).json({ message: "User not found." });
     }
 
     return res.status(200).json(user);
-  } catch (err) {
-    log.error("GetMe error:", err);
-    return res.status(500).json({ message: "Erreur serveur." });
+  } catch (error) {
+    log.error(`Failed to load authenticated user: ${error.message}`);
+    return res.status(500).json({ message: "Internal server error." });
   }
 }

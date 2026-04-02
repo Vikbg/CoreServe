@@ -1,28 +1,42 @@
-// eslint.config.js
-import js from "@eslint/js";
 import prettier from "eslint-config-prettier";
 import pluginPrettier from "eslint-plugin-prettier";
-import globals from "globals";
-import { defineConfig } from "eslint/config";
-
-export default defineConfig([
+export default [
   {
     files: ["**/*.{js,mjs,cjs}"],
+    ignores: ["node_modules/**"],
     languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
       globals: {
-        ...globals.node,
-        ...globals.browser,
-        ...globals.jest,
+        console: "readonly",
+        process: "readonly",
+        Buffer: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
       },
     },
     plugins: {
-      js,
       prettier: pluginPrettier,
     },
     rules: {
-      ...js.configs.recommended.rules,
+      "no-undef": "error",
+      "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
       "prettier/prettier": "error",
     },
-    extends: [prettier],
   },
-]);
+  {
+    files: ["tests/**/*.js"],
+    languageOptions: {
+      globals: {
+        describe: "readonly",
+        it: "readonly",
+        expect: "readonly",
+        jest: "readonly",
+        beforeAll: "readonly",
+        afterAll: "readonly",
+        beforeEach: "readonly",
+      },
+    },
+  },
+  prettier,
+];

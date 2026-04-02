@@ -6,14 +6,14 @@ const config = {
   // application code (index.js, db.js, logger.js) that might not be fully
   // supported by your Node.js version, or if you're using TypeScript/JSX.
   transform: {
-    '^.+\\.js$': 'babel-jest',
+    "^.+\\.js$": "babel-jest",
   },
   // With --experimental-vm-modules, Node.js's native ESM loader
   // should handle imports from node_modules.
   // So, typically, you can revert transformIgnorePatterns to its default.
-  transformIgnorePatterns: ['/node_modules/'],
+  transformIgnorePatterns: ["/node_modules/"],
 
-  testEnvironment: 'node',
+  testEnvironment: "node",
 };
 
 export default config;

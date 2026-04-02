@@ -1,30 +1,30 @@
-# Code de Conduite pour CoreServe
+# Code of Conduct
 
-## Notre engagement
+## Our Pledge
 
-Dans l’intérêt de favoriser un environnement ouvert et accueillant, nous nous engageons, en tant que contributeurs et mainteneurs, à faire de la participation à notre projet une expérience exempte de harcèlement pour tout le monde, quel que soit le niveau d’expérience, le genre, l’identité ou l’expression de genre, l’orientation sexuelle, le handicap, l’apparence personnelle, la taille, la race, l’origine ethnique, l’âge, la religion ou la nationalité.
+To foster an open and welcoming environment, contributors and maintainers pledge to make participation in this project a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity or expression, level of experience, nationality, personal appearance, race, religion, or sexual orientation.
 
-## Notre norme
+## Our Standards
 
-Exemples de comportements acceptables :
-- Utiliser un langage accueillant et inclusif
-- Être respectueux des points de vue et expériences différents
-- Accepter les critiques constructives
-- Se concentrer sur ce qui est le mieux pour la communauté
-- Faire preuve d’empathie envers les autres membres
+Examples of behavior that contribute to a positive environment:
 
-Exemples de comportements inacceptables :
-- L’utilisation de langage ou d’images sexualisées
-- Les commentaires désobligeants
-- Le harcèlement en public ou en privé
-- La publication d’informations privées d’autrui sans permission
+- Using welcoming and inclusive language
+- Respecting differing viewpoints and experiences
+- Accepting constructive feedback
+- Prioritizing what is best for the community
+- Showing empathy toward other contributors
 
-## Application
+Examples of unacceptable behavior:
 
-Les mainteneurs de ce projet ont le droit et la responsabilité de supprimer, modifier ou rejeter les commentaires, commits, code, issues ou autres contributions qui ne respectent pas ce code de conduite.
+- Sexualized language or imagery
+- Trolling, insulting, or derogatory comments
+- Public or private harassment
+- Publishing private information about others without permission
 
-Pour toute question ou incident, merci de contacter le mainteneur du projet via GitHub.
+## Enforcement
 
----
+Project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, issues, and other contributions that do not align with this Code of Conduct.
 
-Ce Code de Conduite s’inspire de [Contributor Covenant](https://www.contributor-covenant.org), version 1.4.
+For questions or incident reports, contact the maintainer through GitHub.
+
+This Code of Conduct is adapted from [Contributor Covenant](https://www.contributor-covenant.org), version 1.4.

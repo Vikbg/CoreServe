@@ -1,26 +1,26 @@
 ---
-name: Demande de fonctionnalité
-about: Suggérer une nouvelle fonctionnalité ou amélioration
-title: "[FEATURE] Nom de la fonctionnalité"
+name: Feature Request
+about: Suggest a new feature or improvement
+title: "[FEATURE] Feature name"
 labels: enhancement
 assignees: ''
 
 ---
 
-## Description de la fonctionnalité
+## Feature Description
 
-Explique ce que tu aimerais voir ajouté/modifié.
-
----
-
-## Justification
-
-Pourquoi cette fonctionnalité serait utile ?
+Explain what you would like to add or change.
 
 ---
 
-## Alternatives envisagées
+## Why This Matters
+
+Describe the problem this feature solves or the value it adds.
 
 ---
 
-## Informations complémentaires
+## Alternatives Considered
+
+---
+
+## Additional Context

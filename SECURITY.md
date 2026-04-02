@@ -1,38 +1,21 @@
----
+# Security Policy
 
-🔐 Sécurité
+## Reporting a Vulnerability
 
-📢 Signaler une vulnérabilité
+If you discover a security vulnerability in this project, report it responsibly by emailing:
 
-Si tu découvres une vulnérabilité de sécurité dans ce projet, nous t'encourageons à la signaler de manière responsable. Pour ce faire, envoie un e-mail à l'adresse suivante :
-viktorserhiienko12@gmail.com
+`viktorserhiienko12@gmail.com`
 
-Nous nous engageons à répondre rapidement et à traiter la vulnérabilité de manière appropriée.
+Please include enough detail to reproduce the issue safely. Reports are reviewed as quickly as possible, and valid issues will be handled privately before public disclosure.
 
-🛡️ Politiques de sécurité
+## Supported Versions
 
-Versions supportées : Nous fournissons des informations sur les versions supportées du projet et leur cycle de vie.
+Security fixes are applied to the latest maintained version of the project. If you are running an older revision, upgrade before requesting support.
 
-Modèle de menace : Nous avons établi un modèle de menace pour identifier et atténuer les risques potentiels.
+## Secure Usage
 
-Utilisation sécurisée : Nous fournissons des recommandations pour une utilisation sécurisée du projet.
-
-Problèmes connus : Nous documentons les problèmes de sécurité connus et leurs solutions.
-
-
-🔄 Mises à jour de sécurité
-
-Les mises à jour de sécurité sont publiées régulièrement. Nous te conseillons de suivre les annonces de sécurité dans ce dépôt pour rester informé des dernières corrections.
-
-
----
-
-📄 Références
-
-Exemple de fichier SECURITY.md sur GitHub
-
-Documentation GitHub sur les politiques de sécurité
-
-
-
----
+- Set a strong `JWT_SECRET`.
+- Use HTTPS in any deployed environment.
+- Rotate API keys when you suspect exposure.
+- Restrict `CORS_ORIGIN` to trusted frontends.
+- Keep MariaDB, Redis, and Node.js updated with current security patches.

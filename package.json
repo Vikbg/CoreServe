@@ -4,16 +4,17 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "dev": "NODE_ENV=dev node index.js",
-    "start": "NODE_ENV=prod node index.js",
-    "test": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' pnpm jest"
+    "dev": "NODE_ENV=development node index.js",
+    "start": "NODE_ENV=production node index.js",
+    "test": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' jest"
   },
   "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "A modular Node.js backend starter with authentication, API key protection, and score endpoints.",
   "dependencies": {
+    "@ngrok/ngrok": "^1.5.1",
     "bcryptjs": "^3.0.2",
     "chalk": "^5.4.1",
     "cors": "^2.8.5",
