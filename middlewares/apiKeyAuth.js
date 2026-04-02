@@ -1,13 +1,14 @@
 import rateLimit from "express-rate-limit";
 import db from "../db.js";
 import { log } from "../utils/logger.js";
-import { createRequire } from 'module';
+import { createRequire } from "module";
 import { PLAN_LIMITS } from "../config/rateLimits.js";
 
 const require = createRequire(import.meta.url);
-const { LRUCache } = require('lru-cache');
+const { LRUCache } = require("lru-cache");
 
 const cache = new LRUCache({ max: 500, ttl: 1000 * 60 * 15 }); // 15 minutes
+const limiterCache = new Map();
 
 function createRateLimiter(key, max, windowMs) {
   return rateLimit({
@@ -28,6 +29,16 @@ function createRateLimiter(key, max, windowMs) {
     standardHeaders: true,
     legacyHeaders: false,
   });
+}
+
+function getLimiterForKey(apiKey, limits) {
+  if (limiterCache.has(apiKey)) {
+    return limiterCache.get(apiKey);
+  }
+
+  const limiter = createRateLimiter(apiKey, limits.max, limits.windowMs);
+  limiterCache.set(apiKey, limiter);
+  return limiter;
 }
 
 export default async function apiKeyMiddleware(req, res, next) {
@@ -70,9 +81,11 @@ export default async function apiKeyMiddleware(req, res, next) {
   const limits = PLAN_LIMITS[plan] || PLAN_LIMITS["free"];
 
   // Appliquer le rate limiter spécifique à ce plan
-  const limiter = createRateLimiter(apiKey, limits.max, limits.windowMs);
+  const limiter = getLimiterForKey(apiKey, limits);
   limiter(req, res, () => {
     req.userId = keyData.user_id;
     next();
   });
 }
+
+export { getLimiterForKey, limiterCache };
