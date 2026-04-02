@@ -1,8 +1,6 @@
 // eslint.config.js
-import js from "@eslint/js";
 import prettier from "eslint-config-prettier";
 import pluginPrettier from "eslint-plugin-prettier";
-import globals from "globals";
 import { defineConfig } from "eslint/config";
 
 export default defineConfig([
@@ -10,17 +8,31 @@ export default defineConfig([
     files: ["**/*.{js,mjs,cjs}"],
     languageOptions: {
       globals: {
-        ...globals.node,
-        ...globals.browser,
-        ...globals.jest,
+        process: "readonly",
+        console: "readonly",
+        module: "readonly",
+        require: "readonly",
+        __dirname: "readonly",
+        __filename: "readonly",
+        jest: "readonly",
+        describe: "readonly",
+        it: "readonly",
+        expect: "readonly",
+        beforeAll: "readonly",
+        afterAll: "readonly",
+        beforeEach: "readonly",
+        setTimeout: "readonly",
       },
     },
     plugins: {
-      js,
       prettier: pluginPrettier,
     },
     rules: {
-      ...js.configs.recommended.rules,
+      "no-undef": "error",
+      "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+      "no-unreachable": "error",
+      "no-constant-binary-expression": "error",
+      "no-dupe-keys": "error",
       "prettier/prettier": "error",
     },
     extends: [prettier],
