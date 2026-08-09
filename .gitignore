@@ -26,8 +26,14 @@ coverage/
 # Optional REPL history
 .node_repl_history
 
-# dotenv environment variables file
+# Environment and secret files
 .env
+.env.*
+!.env.example
+
+# Database/cache dumps
+*.rdb
+dump.rdb
 
 # Mac system files
 .DS_Store
@@ -45,7 +51,5 @@ jest/cache/
 perfs-tests/
 examples/
 
-# Configuration files
-.env
-dump.rdb
+# Local tooling
 .codex
