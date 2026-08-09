@@ -119,7 +119,7 @@ export default async function apiKeyMiddleware(req, res, next) {
   res.setHeader("RateLimit-Reset", String(Math.ceil(state.resetAt / 1000)));
 
   if (state.count > limits.max) {
-    log.warn(`Rate limit exceeded for API key ${apiKey}`);
+    log.warn("Rate limit exceeded for an API key");
     await banApiKey(apiKey);
     return res
       .status(429)
