@@ -28,7 +28,7 @@
     "lru-cache": "^11.1.0",
     "mysql2": "^3.23.2",
     "node-cache": "^5.1.2",
-    "ora": "^8.2.0",
+    "ora": "^9.4.1",
     "redis": "^5.0.1"
   },
   "devDependencies": {
