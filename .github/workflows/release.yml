@@ -4,63 +4,47 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Using a slightly newer version
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4 # Using a slightly newer version
+        uses: actions/setup-node@v4
         with:
-          node-version: 18 # Recommended to use a supported Node.js LTS version
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3 # Using a slightly newer version
-        with:
-          version: 8
-          run_install: false # We will run install manually later
-
-      - name: Cache pnpm store
-        uses: actions/cache@v4 # Using a slightly newer version
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-
-      - name: Install dependencies
-        run: pnpm install
+          node-version: 22
 
       - name: Get version from package.json
-        id: get_version # Corrected indentation
-        run: | # Corrected indentation
+        run: |
           VERSION=$(node -p "require('./package.json').version")
-          echo "VERSION=$VERSION" >> $GITHUB_ENV # Correct way to set environment variable
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
 
       - name: Check if tag already exists
         id: tag_check
         run: |
           TAG_REF="refs/tags/v${{ env.VERSION }}"
-          if git ls-remote --exit-code origin $TAG_REF > /dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT" # Corrected output syntax
+          if git ls-remote --exit-code origin "$TAG_REF" > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
             echo "Tag v${{ env.VERSION }} already exists."
           else
-            echo "exists=false" >> "$GITHUB_OUTPUT" # Corrected output syntax
+            echo "exists=false" >> "$GITHUB_OUTPUT"
             echo "Tag v${{ env.VERSION }} does not exist."
           fi
 
       - name: Create GitHub Release
         if: steps.tag_check.outputs.exists == 'false'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: "v${{ env.VERSION }}"
           name: "v${{ env.VERSION }}"
-          body: |
-            Automatic release generated from the package.json version.
-          draft: false # Set to true if you want to create a draft release
-          prerelease: false # Set to true if it's a prerelease
+          body: Automatic release generated from the package.json version.
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
