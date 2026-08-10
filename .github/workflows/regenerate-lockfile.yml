@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   regenerate:
-    if: github.event.head_commit.message != 'chore: remove unused artillery'
+    if: "${{ github.event.head_commit.message != 'chore: remove unused artillery' }}"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
