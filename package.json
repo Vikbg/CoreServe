@@ -2,6 +2,9 @@
   "name": "CoreServe",
   "version": "1.0.1",
   "main": "index.js",
+  "engines": {
+    "node": ">=26"
+  },
   "scripts": {
     "lint": "eslint .",
     "dev": "NODE_ENV=development node index.js",
