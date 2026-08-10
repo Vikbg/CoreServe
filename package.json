@@ -32,7 +32,7 @@
     "redis": "^5.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.27.1",
+    "@babel/core": "^7.29.6",
     "@babel/preset-env": "^7.27.2",
     "artillery": "^2.0.23",
     "babel-jest": "^29.7.0",
