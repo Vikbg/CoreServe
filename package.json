@@ -26,7 +26,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "lru-cache": "^11.1.0",
-    "mysql2": "^3.14.1",
+    "mysql2": "^3.23.2",
     "node-cache": "^5.1.2",
     "ora": "^8.2.0",
     "redis": "^5.0.1"
